@@ -1,217 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic-Tac-Toe</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic-Tac-Toe | 2 Player Mode</title>
   <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+      padding: 0;
     }
 
-    .game-container {
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #007bff, #6f42c1);
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+
+    body.loaded {
+      opacity: 1;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .input-container {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 1s ease forwards;
+      transform: translateY(30px);
+      opacity: 0;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    input {
+      padding: 12px;
+      width: 220px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 30px;
+      font-size: 1rem;
+      background-color: #fff;
+      color: #007bff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    button:hover {
+      background-color: #007bff;
+      color: #fff;
+      transform: scale(1.05);
     }
 
     .board {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 5px;
-      width: 90vw;
-      max-width: 400px;
-      height: 90vw;
-      max-height: 400px;
-      background-color: #ffffff;
-      border: 2px solid #333;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 10px;
+      margin-top: 30px;
+      justify-content: center;
+      align-items: center;
       display: none;
+      animation: fadeIn 0.7s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .cell {
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      font-size: 2.5rem;
+      font-weight: bold;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #e7e9eb;
-      border: 1px solid #ccc;
-      font-size: 3rem;
-      font-weight: bold;
       cursor: pointer;
-      user-select: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
-    .cell.taken {
-      pointer-events: none;
+    .cell:hover {
+      transform: scale(1.05);
+      background-color: rgba(255, 255, 255, 0.2);
     }
 
     .status {
-      margin: 20px 0;
+      margin-top: 25px;
       font-size: 1.2rem;
-      font-weight: bold;
+      font-weight: 500;
+      min-height: 30px;
     }
 
-    .restart {
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
+    .back {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 0.9rem;
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 6px 15px;
+      border-radius: 10px;
       cursor: pointer;
-      display: none;
+      transition: all 0.3s;
     }
 
-    .restart:hover {
-      background-color: #0056b3;
+    .back:hover {
+      background-color: rgba(255, 255, 255, 0.2);
     }
 
-    .registration {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .registration input {
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      width: 200px;
-    }
-
-    .registration button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .registration button:hover {
-      background-color: #0056b3;
+    @media (max-width: 480px) {
+      .board {
+        grid-template-columns: repeat(3, 80px);
+        grid-gap: 8px;
+      }
+      .cell {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+      }
+      h1 {
+        font-size: 1.6rem;
+      }
+      input {
+        width: 180px;
+      }
+      button {
+        width: 80%;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="game-container">
-    <div class="registration" id="registration">
-      <input type="text" id="playerX" placeholder="Enter Player X's name" required />
-      <input type="text" id="playerO" placeholder="Enter Player O's name" required />
-      <button onclick="startGame()">Start Game</button>
-    </div>
-    <div class="status">Player X's turn</div>
-    <div class="board" id="board">
-      <div class="cell" data-index="0"></div>
-      <div class="cell" data-index="1"></div>
-      <div class="cell" data-index="2"></div>
-      <div class="cell" data-index="3"></div>
-      <div class="cell" data-index="4"></div>
-      <div class="cell" data-index="5"></div>
-      <div class="cell" data-index="6"></div>
-      <div class="cell" data-index="7"></div>
-      <div class="cell" data-index="8"></div>
-    </div>
-    <button class="restart">Restart</button>
+  <button class="back" onclick="goBack()">← Back</button>
+  <h1>👥 Two Player Mode</h1>
+
+  <div class="input-container" id="inputContainer">
+    <input type="text" id="player1" placeholder="Player 1 name (O)" />
+    <input type="text" id="player2" placeholder="Player 2 name (X)" />
+    <button onclick="startGame()">Start Game</button>
   </div>
 
+  <div class="board" id="board"></div>
+  <div class="status" id="status"></div>
+  <button id="restartBtn" style="display:none;" onclick="resetGame()">Restart</button>
+
   <script>
-    const board = document.getElementById('board');
-    const cells = document.querySelectorAll('.cell');
-    const statusText = document.querySelector('.status');
-    const restartButton = document.querySelector('.restart');
-    const registration = document.getElementById('registration');
+    const board = document.getElementById("board");
+    const status = document.getElementById("status");
+    const inputContainer = document.getElementById("inputContainer");
+    const restartBtn = document.getElementById("restartBtn");
+    let player1 = "", player2 = "";
+    let cells = Array(9).fill(null);
+    let currentPlayer = "O";
+    let gameOver = false;
 
-    let currentPlayer = 'X';
-    let gameActive = true;
-    let gameState = ['', '', '', '', '', '', '', '', ''];
-
-    const winningConditions = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
-    ];
-
-    let playerXName = '';
-    let playerOName = '';
+    window.addEventListener("load", () => {
+      document.body.classList.add("loaded");
+    });
 
     function startGame() {
-      playerXName = document.getElementById('playerX').value;
-      playerOName = document.getElementById('playerO').value;
-
-      if (!playerXName || !playerOName) {
-        alert('Please enter names for both players.');
-        return;
-      }
-
-      registration.style.display = 'none';
-      board.style.display = 'grid';
-      restartButton.style.display = 'block';
-      statusText.textContent = `${playerXName}'s (X) turn`;
+      player1 = document.getElementById("player1").value.trim() || "Player 1";
+      player2 = document.getElementById("player2").value.trim() || "Player 2";
+      inputContainer.style.display = "none";
+      board.style.display = "grid";
+      restartBtn.style.display = "inline-block";
+      status.textContent = `${player1}'s turn (O)`;
+      renderBoard();
     }
 
-    function handleCellClick(event) {
-      const cell = event.target;
-      const index = cell.getAttribute('data-index');
-
-      if (gameState[index] !== '' || !gameActive) {
-        return;
-      }
-
-      gameState[index] = currentPlayer;
-      cell.textContent = currentPlayer;
-      cell.classList.add('taken');
-
-      if (checkWin()) {
-        statusText.textContent = `${currentPlayer === 'X' ? playerXName : playerOName} (${currentPlayer}) wins!`;
-        gameActive = false;
-        return;
-      }
-
-      if (gameState.every(cell => cell !== '')) {
-        statusText.textContent = 'It\'s a draw!';
-        gameActive = false;
-        return;
-      }
-
-      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-      statusText.textContent = `${currentPlayer === 'X' ? playerXName : playerOName}'s (${currentPlayer}) turn`;
-    }
-
-    function checkWin() {
-      return winningConditions.some(condition => {
-        return condition.every(index => gameState[index] === currentPlayer);
+    function renderBoard() {
+      board.innerHTML = "";
+      cells.forEach((cell, index) => {
+        const cellDiv = document.createElement("div");
+        cellDiv.classList.add("cell");
+        cellDiv.textContent = cell || "";
+        cellDiv.addEventListener("click", () => makeMove(index));
+        board.appendChild(cellDiv);
       });
     }
 
-    function restartGame() {
-      gameState = ['', '', '', '', '', '', '', '', ''];
-      currentPlayer = 'X';
-      gameActive = true;
-      statusText.textContent = `${playerXName}'s (X) turn`;
+    function makeMove(index) {
+      if (cells[index] || gameOver) return;
+      cells[index] = currentPlayer;
+      renderBoard();
 
-      cells.forEach(cell => {
-        cell.textContent = '';
-        cell.classList.remove('taken');
-      });
+      if (checkWinner(currentPlayer)) {
+        const winner = currentPlayer === "O" ? player1 : player2;
+        status.textContent = `🎉 ${winner} Wins!`;
+        gameOver = true;
+        return;
+      }
+
+      if (!cells.includes(null)) {
+        status.textContent = "😐 It's a Draw!";
+        gameOver = true;
+        return;
+      }
+
+      currentPlayer = currentPlayer === "O" ? "X" : "O";
+      status.textContent = currentPlayer === "O" ? `${player1}'s turn (O)` : `${player2}'s turn (X)`;
     }
 
-    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-    restartButton.addEventListener('click', restartGame);
+    function checkWinner(player) {
+      const wins = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+      return wins.some((combo) =>
+        combo.every((index) => cells[index] === player)
+      );
+    }
+
+    function resetGame() {
+      cells = Array(9).fill(null);
+      currentPlayer = "O";
+      gameOver = false;
+      status.textContent = `${player1}'s turn (O)`;
+      renderBoard();
+    }
+
+    function goBack() {
+      document.body.style.opacity = "0";
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 500);
+    }
   </script>
 </body>
 </html>
